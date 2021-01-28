@@ -1,0 +1,12 @@
+- hosts: nagios-ansible
+  tasks:
+  - name: Install apache
+    import_role:
+      name: ansible-apache-role
+      
+  - name: Install Nagios-ix
+    import_role:
+      name: ansible-nagiosxi-role
+
+    vars:
+      hostname: "{{ inventory_hostname  }}"

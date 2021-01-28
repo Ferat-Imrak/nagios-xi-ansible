@@ -1,0 +1,73 @@
+---
+- name: Install Epel
+  yum:
+    name: epel-release
+    state: latest
+
+- name: Install Firewalld
+  yum:
+    name: firewalld
+    state: latest
+
+- name: Make sure a firewalld is running
+  ansible.builtin.systemd:
+    state: started
+    name: firewalld
+
+- name: Enable service firewalld and ensure it is not masked
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: yes
+    masked: no
+
+- name: install nagios plugins
+  yum:
+    name: wget, unzip, openssl
+    state: latest
+
+- name: Disable Selinux
+  selinux:
+    state: disabled
+  register: selinux_status
+
+- name: Install net-tools
+  yum:
+    name: net-tools, mlocate
+    state: latest
+
+- name: Install net-tools as a virtual machine
+  yum:
+    name: open-vm-tools
+    state: latest
+
+- name: Opening post 80
+  firewalld: 
+    service: https
+    permanent: true
+    state: enabled
+
+- name: Opening port 22
+  firewalld: 
+    service: ssh
+    permanent: true
+    state: enabled
+
+- name: Install Nagios XI files
+  get_url:
+    url: https://assets.nagios.com/downloads/nagiosxi/xi-latest.tar.gz
+    dest: /tmp
+- unarchive:
+    src: /tmp/xi-latest.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Install Nagios XI Agent
+  get_url:
+    url: https://assets.nagios.com/downloads/nagiosxi/agents/linux-nrpe-agent.tar.gz
+    dest: /tmp
+
+- unarchive:
+    src: /tmp/linux-nrpe-agent.tar.gz
+    dest: /tmp
+    remote_src: yes
+# - shell: "cd /tmp/nagiosxi ; ./fullinstall"
