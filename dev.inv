@@ -1,4 +1,2 @@
 [nagios-ansible]
 nagios-xi      ansible_host=104.236.54.221
-
-nagios-new     ansible_host=68.183.150.131
